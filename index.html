@@ -14,7 +14,11 @@
   }
   #modalMsg,
   .icon-btn {
-    color: black !important; /* Edit & Hapus hitam */
+    color: black;
+  }
+  .icon-btn:hover {
+    background: rgba(0,0,0,0.1);
+    color: black;
   }
   .modal {
     background-color: white;
@@ -29,7 +33,11 @@
   }
   #modalMsg,
   .icon-btn {
-    color: white !important; /* Edit & Hapus putih */
+    color: white;
+  }
+  .icon-btn:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
   }
   .modal {
     background-color: #1e1e1e;
@@ -49,11 +57,7 @@ body {
   cursor: pointer;
   font-weight: bold;
   border-radius: 4px;
-  transition: background 0.2s;
-}
-
-.icon-btn:hover {
-  background: rgba(0,0,0,0.1);
+  transition: background 0.2s, color 0.2s;
 }
 
 .modal-backdrop {
