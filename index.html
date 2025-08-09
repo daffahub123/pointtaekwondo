@@ -12,12 +12,7 @@
     background-color: white;
     color: black;
   }
-  #modalMsg,
-  .icon-btn {
-    color: black;
-  }
-  .icon-btn:hover {
-    background: rgba(0,0,0,0.1);
+  #modalMsg, .icon-btn {
     color: black;
   }
   .modal {
@@ -31,12 +26,7 @@
     background-color: #121212;
     color: white;
   }
-  #modalMsg,
-  .icon-btn {
-    color: white;
-  }
-  .icon-btn:hover {
-    background: rgba(255,255,255,0.1);
+  #modalMsg, .icon-btn {
     color: white;
   }
   .modal {
@@ -57,7 +47,11 @@ body {
   cursor: pointer;
   font-weight: bold;
   border-radius: 4px;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.2s;
+}
+
+.icon-btn:hover {
+  background: rgba(0,0,0,0.1);
 }
 
 .modal-backdrop {
