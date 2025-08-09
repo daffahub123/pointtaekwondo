@@ -1,426 +1,528 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Laporan Point — Final</title>
+<!doctype html>
 
-<style>
-  :root {
-    --bg-light: #f2f4f7;
-    --text-light: #000000;
-    --card-light: rgba(255 255 255 / 0.6);
-    --glass-border-light: rgba(255 255 255 / 0.4);
+<html lang="id">  
+<head>  
+<meta charset="utf-8" />  
+<meta name="viewport" content="width=device-width,initial-scale=1" />  
+<title>Laporan Point — Final</title>  <!-- SheetJS for XLSX export -->  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>  <style>  
+  :root{  
+    --bg-light: #f2f4f7;  
+    --text-light: #0b0b0b;  
+    --card-light: rgba(255,255,255,0.7);  
+    --glass-border-light: rgba(255,255,255,0.6);  
+  
+    --bg-dark: #000000; /* full black */  
+    --text-dark: #ffffff;  
+    --card-dark: rgba(255,255,255,0.04); /* thin glass on black */  
+    --glass-border-dark: rgba(255,255,255,0.06);  
+  
+    --accent: #ffffff;  
+    --radius: 12px;  
+    --gap: 12px;  
+    --shadow: 0 6px 18px rgba(0,0,0,0.12);  
+    font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;  
+  }  
+  
+  html,body{height:100%;margin:0;padding:0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}  
+  
+  /* base (light) */  
+  body{  
+    background: var(--bg-light);  
+    color: var(--text-light);  
+    padding: 20px;  
+  }  
+  .app {  
+    max-width: 1100px;  
+    margin: 18px auto;  
+    display:block;  
+    gap:var(--gap);  
+  }  
+  
+  /* glass card style used everywhere for consistency (like search) */  
+  .glass {  
+    background: var(--card-light);  
+    border-radius: var(--radius);  
+    padding: 12px;  
+    border: 1px solid var(--glass-border-light);  
+    box-shadow: var(--shadow);  
+    -webkit-backdrop-filter: blur(8px);  
+    backdrop-filter: blur(8px);  
+  }  
+  
+  /* Header */  
+  .header {  
+    display:flex; align-items:center; gap:16px; justify-content:space-between; margin-bottom:12px;  
+  }  
+  .brand {  
+    font-weight:800; letter-spacing:1px; font-size:20px; padding:10px 14px; border-radius:12px;  
+    background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));  
+    color:var(--accent);  
+    -webkit-backdrop-filter: blur(6px);  
+    backdrop-filter: blur(6px);  
+  }  
+  
+  /* search & actions */  
+  .search {  
+    display:flex; align-items:center; gap:10px; width:60%; min-width:220px;  
+    padding:8px 12px; border-radius:40px; border:1px solid var(--glass-border-light);  
+    background: var(--card-light); font-weight:700;  
+  }  
+  .search input{ border:0; outline:0; background:transparent; width:100%; font-weight:700; color:inherit; }  
+  
+  .actions { display:flex; gap:8px; align-items:center; }  
+  
+  .btn {  
+    padding:9px 12px; border-radius:10px; border:1px solid var(--glass-border-light);  
+    background: var(--card-light); font-weight:700; cursor:pointer; color:var(--accent);  
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);  
+  }  
+  .btn.ghost{ background:transparent; color:inherit; }  
+  .btn.small{ padding:6px 8px; font-size:13px; }  
+  
+  /* Input form - grid */  
+  .form {  
+    display:grid; grid-template-columns: 1fr 120px 1fr 160px auto; gap:12px; align-items:center;  
+  }  
+  .form .glass-input {  
+    padding:10px 12px; border-radius:12px; border:1px solid var(--glass-border-light);  
+    background: var(--card-light); font-weight:700; outline:none; color:inherit;  
+  }  
+  .form .glass-input[type="date"]{ padding:8px 10px; font-weight:600; }  
+  
+  /* Make table inputs/cells look like search (consistent) */  
+  .table-wrap {  
+    overflow:auto;  
+    border-radius:12px;  
+    padding:12px;  
+    border:1px solid var(--glass-border-light);  
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));  
+  }  
+  
+  table{ width:100%; border-collapse:collapse; min-width:720px; }  
+  thead th{ text-align:left; padding:14px 12px; font-weight:800; cursor:pointer; user-select:none; color:inherit; }  
+  tbody td{ padding:12px 12px; font-weight:700; vertical-align:middle; color:inherit; }  
+  tr + tr td{ border-top: 10px solid transparent; } /* spacing feel */  
+  
+  /* pill style for name cell like search */  
+  .pill {  
+    display:inline-block; padding:10px 14px; border-radius:12px; background:var(--card-light);  
+    border:1px solid var(--glass-border-light); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);  
+    font-weight:800; color:var(--accent);  
+  }  
+  
+  .small-muted { font-size:13px; opacity:.85; font-weight:700; color:inherit; }  
+  
+  .row-ops { display:flex; gap:8px; justify-content:center; }  
+  
+  .icon-btn {  
+    padding:8px 10px; border-radius:10px; border:1px solid var(--glass-border-light);  
+    background:var(--card-light); cursor:pointer; font-weight:800; color:var(--accent);  
+  }  
+  
+  /* Modal */  
+  .modal-backdrop {  
+    position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:9999;  
+    background: rgba(0,0,0,0.45);  
+    opacity:0;  
+    transition: opacity 220ms ease;  
+  }  
+  .modal-backdrop.show { display:flex; opacity:1; }  
+  
+  .modal {  
+    width:92%; max-width:520px; border-radius:16px; padding:18px; text-align:center;  
+    border:1px solid var(--glass-border-light); background: var(--card-light);  
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);  
+    transform: scale(.92); transition: transform 220ms cubic-bezier(.2,.9,.2,1), opacity 220ms ease;  
+    opacity:0;  
+  }  
+  .modal-backdrop.show .modal { transform: scale(1); opacity:1; }  
+  
+  .modal h3{ margin:4px 0 10px 0; font-size:20px; }  
+  .modal p{ color:var(--text-light); opacity:.85; font-weight:700; margin-bottom:14px; }  
+  
+  .modal .btn { min-width:120px; }  
+  
+  /* responsive */  
+  @media (max-width:920px){  
+    .form{ grid-template-columns: 1fr; }  
+    .search{ width:100%; }  
+    table{ min-width:640px; }  
+  }  
+  
+  /* DARK THEME */  
+  body.dark {  
+    background: var(--bg-dark);  
+    color: var(--text-dark);  
+  }  
+  /* override glass & borders in dark */  
+  body.dark .glass,  
+  body.dark .glass-input,  
+  body.dark .search,  
+  body.dark .table-wrap,  
+  body.dark .modal {  
+    background: var(--card-dark);  
+    border:1px solid var(--glass-border-dark);  
+  }  
+  body.dark .pill { background: var(--card-dark); border:1px solid var(--glass-border-dark); color:var(--text-dark); }  
+  body.dark .btn { border:1px solid var(--glass-border-dark); color:var(--text-dark); background:var(--card-dark); }  
+  body.dark .small-muted { color: var(--text-dark); opacity:.75; }  
+  
+  /* ensure inputs & table text contrast */  
+  input, select, textarea, button { color: inherit; font-weight:700; }  
+  td, th { color: inherit; }  
+  
+</style>  </head>  
+<body>  
+  <div class="app">  <div class="header">  
+  <div style="display:flex;gap:12px;align-items:center;">  
+    <div class="brand glass">LAPORAN POINT</div>  
+    <div class="search glass search-box" style="min-width:260px;">  
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="opacity:.9"><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>  
+      <input id="globalSearch" placeholder="Cari nama, kegiatan..." />  
+    </div>  
+  </div>  
 
-    --bg-dark: #000000;
-    --text-dark: #ffffff;
-    --card-dark: rgba(255 255 255 / 0.07);
-    --glass-border-dark: rgba(255 255 255 / 0.15);
+  <div class="actions">  
+    <button class="btn small" id="toggleTheme">Mode Gelap</button>  
+    <button class="btn" id="exportCsv">Export CSV</button>  
+    <button class="btn" id="exportXlsx">Export XLSX</button>  
+  </div>  
+</div>  
 
-    --accent: #ffffff;
-    --radius: 12px;
-    --gap: 12px;
-    --shadow: 0 6px 18px rgba(0 0 0 / 0.12);
+<!-- input card -->  
+<div class="glass" style="margin-bottom:12px;">  
+  <form id="entryForm" class="form" onsubmit="return false;">  
+    <input id="nameInput" class="glass-input" placeholder="Nama ..." required />  
+    <input id="pointInput" class="glass-input" placeholder="Point ..." />  
+    <input id="dateInput" class="glass-input" type="date" />  
+    <input id="kegInput" class="glass-input" placeholder="Kegiatan ..." />  
+    <div style="display:flex;gap:8px;align-items:center;">  
+      <button id="addBtn" class="btn" type="button">Tambah</button>  
+      <button id="updateBtn" class="btn ghost" style="display:none" type="button">Simpan</button>  
+      <button id="resetBtn" class="btn ghost small" type="button">Reset</button>  
+    </div>  
+  </form>  
+</div>  
 
-    font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  }
+<!-- table -->  
+<div class="table-wrap glass">  
+  <table id="dataTable" aria-describedby="tableNote">  
+    <thead>  
+      <tr>  
+        <th data-key="name">NAMA ▲▼</th>  
+        <th data-key="point" style="width:90px; text-align:center;">POINT</th>  
+        <th data-key="date" style="width:140px; text-align:center;">TANGGAL</th>  
+        <th data-key="kegiatan" style="text-align:center;">KEGIATAN</th>  
+        <th style="width:120px; text-align:center;">AKSI</th>  
+      </tr>  
+    </thead>  
+    <tbody id="tableBody"></tbody>  
+  </table>  
 
-  html, body {
-    margin: 0; padding: 20px; height: 100%;
-    background: var(--bg-light);
-    color: var(--text-light);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+  <div id="tableNote" style="text-align:right;margin-top:10px;font-weight:700;opacity:.85;">Data tersimpan di browser • Tampilan kaca</div>  
+</div>
 
-  body.dark {
-    background: var(--bg-dark);
-    color: var(--text-dark);
-  }
-
-  .app {
-    max-width: 1100px;
-    margin: 18px auto;
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap);
-  }
-
-  /* Glass style */
-  .glass {
-    background: var(--card-light);
-    border-radius: var(--radius);
-    padding: 12px;
-    border: 1px solid var(--glass-border-light);
-    box-shadow: var(--shadow);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
-    color: inherit;
-    transition: background 0.3s ease, border-color 0.3s ease;
-  }
-
-  body.dark .glass {
-    background: var(--card-dark);
-    border-color: var(--glass-border-dark);
-  }
-
-  /* Header */
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .brand {
-    font-weight: 800;
-    letter-spacing: 1px;
-    font-size: 20px;
-    padding: 10px 14px;
-    border-radius: var(--radius);
-    background: linear-gradient(180deg, rgba(255 255 255 / 0.12), rgba(255 255 255 / 0.04));
-    color: var(--accent);
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
-    user-select: none;
-  }
-
-  /* Search */
-  .search {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 260px;
-    background: var(--card-light);
-    border-radius: 40px;
-    padding: 8px 16px;
-    border: 1px solid var(--glass-border-light);
-    font-weight: 700;
-    color: inherit;
-  }
-  body.dark .search {
-    background: var(--card-dark);
-    border-color: var(--glass-border-dark);
-  }
-
-  .search svg {
-    opacity: 0.9;
-    stroke: currentColor;
-  }
-
-  .search input {
-    border: none;
-    outline: none;
-    background: transparent;
-    color: inherit;
-    font-weight: 700;
-    width: 100%;
-    font-size: 15px;
-  }
-
-  /* Buttons */
-  .btn {
-    padding: 9px 16px;
-    border-radius: 10px;
-    border: 1px solid var(--glass-border-light);
-    background: var(--card-light);
-    font-weight: 700;
-    cursor: pointer;
-    color: var(--accent);
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
-    transition: background-color 0.25s ease, color 0.25s ease;
-  }
-
-  body.dark .btn {
-    background: var(--card-dark);
-    border-color: var(--glass-border-dark);
-    color: var(--text-dark);
-  }
-
-  .btn.ghost {
-    background: transparent;
-    color: inherit;
-    border-color: transparent;
-  }
-
-  .btn.small {
-    padding: 6px 10px;
-    font-size: 13px;
-  }
-
-  .actions {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-
-  /* Form */
-  form.form {
-    display: grid;
-    grid-template-columns: 1fr 120px 1fr 160px auto;
-    gap: 12px;
-    align-items: center;
-  }
-
-  @media (max-width: 920px) {
-    form.form {
-      grid-template-columns: 1fr;
-    }
-    .search {
-      min-width: auto;
-      width: 100%;
-    }
-  }
-
-  input.glass-input {
-    padding: 10px 12px;
-    border-radius: var(--radius);
-    border: 1px solid var(--glass-border-light);
-    background: var(--card-light);
-    font-weight: 700;
-    outline: none;
-    color: inherit;
-    font-size: 15px;
-  }
-  input.glass-input[type="date"] {
-    padding: 8px 10px;
-  }
-  body.dark input.glass-input {
-    background: var(--card-dark);
-    border-color: var(--glass-border-dark);
-  }
-
-  /* Table */
-  .table-wrap {
-    overflow-x: auto;
-    border-radius: var(--radius);
-    padding: 12px;
-    border: 1px solid var(--glass-border-light);
-    background: linear-gradient(180deg, rgba(255 255 255 / 0.03), rgba(255 255 255 / 0.02));
-  }
-  body.dark .table-wrap {
-    background: var(--card-dark);
-    border-color: var(--glass-border-dark);
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 720px;
-  }
-
-  thead th {
-    text-align: left;
-    padding: 14px 12px;
-    font-weight: 800;
-    cursor: pointer;
-    user-select: none;
-    color: inherit;
-    white-space: nowrap;
-  }
-
-  tbody td {
-    padding: 12px 12px;
-    font-weight: 700;
-    vertical-align: middle;
-    color: inherit;
-  }
-
-  tr + tr td {
-    border-top: 10px solid transparent;
-  }
-
-  /* Pill style */
-  .pill {
-    display: inline-block;
-    padding: 10px 14px;
-    border-radius: var(--radius);
-    background: var(--card-light);
-    border: 1px solid var(--glass-border-light);
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
-    font-weight: 800;
-    color: var(--accent);
-  }
-  body.dark .pill {
-    background: var(--card-dark);
-    border-color: var(--glass-border-dark);
-    color: var(--text-dark);
-  }
-
-  .small-muted {
-    font-size: 13px;
-    font-weight: 700;
-    color: inherit;
-    opacity: 0.85;
-  }
-  body:not(.dark) .small-muted {
-    color: #000000;
-    opacity: 0.9;
-  }
-  body.dark .small-muted {
-    color: #ffffff;
-    opacity: 0.75;
-  }
-
-  .row-ops {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-  }
-
-  .icon-btn {
-    padding: 8px 10px;
-    border-radius: 10px;
-    border: 1px solid var(--glass-border-light);
-    background: var(--card-light);
-    cursor: pointer;
-    font-weight: 800;
-    color: var(--accent);
-    user-select: none;
-    transition: background-color 0.25s ease, color 0.25s ease;
-  }
-  body.dark .icon-btn {
-    background: var(--card-dark);
-    border-color: var(--glass-border-dark);
-    color: var(--text-dark);
-  }
-  .icon-btn:hover {
-    background: var(--glass-border-light);
-    color: var(--text-light);
-  }
-  body.dark .icon-btn:hover {
-    background: var(--glass-border-dark);
-    color: var(--text-dark);
-  }
-
-  /* Modal */
-  .modal-backdrop {
-    position: fixed;
-    inset: 0;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0 0 0 / 0.45);
-    opacity: 0;
-    transition: opacity 220ms ease;
-    z-index: 9999;
-  }
-  .modal-backdrop.show {
-    display: flex;
-    opacity: 1;
-  }
-
-  .modal {
-    width: 92%;
-    max-width: 520px;
-    border-radius: 16px;
-    padding: 18px;
-    text-align: center;
-    border: 1px solid var(--glass-border-light);
-    background: var(--card-light);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    transform: scale(0.92);
-    transition: transform 220ms cubic-bezier(.2,.9,.2,1), opacity 220ms ease;
-    opacity: 0;
-  }
-  body.dark .modal {
-    background: var(--card-dark);
-    border-color: var(--glass-border-dark);
-  }
-  .modal-backdrop.show .modal {
-    transform: scale(1);
-    opacity: 1;
-  }
-
-  .modal h3 {
-    margin: 4px 0 10px 0;
-    font-size: 20px;
-    color: inherit;
-  }
-
-  .modal p {
-    color: inherit;
-    opacity: 0.85;
-    font-weight: 700;
-    margin-bottom: 14px;
-  }
-
-  /* Misc */
-  #tableNote {
-    text-align: right;
-    margin-top: 10px;
-    font-weight: 700;
-    opacity: 0.85;
-    color: inherit;
-  }
-
-</style>
-</head>
-<body>
-  <div class="app">
-    <header class="header">
-      <div style="display:flex;gap:12px;align-items:center;">
-        <div class="brand glass">LAPORAN POINT</div>
-        <div class="search glass" role="search" aria-label="Cari data">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <input id="globalSearch" type="search" placeholder="Cari nama, kegiatan..." aria-label="Cari nama atau kegiatan"/>
-        </div>
-      </div>
-
-      <div class="actions">
-        <button id="toggleTheme" class="btn small" aria-pressed="false">Mode Gelap</button>
-        <button id="exportCsv" class="btn" type="button">Export CSV</button>
-        <button id="exportXlsx" class="btn" type="button">Export XLSX</button>
-      </div>
-    </header>
-
-    <form id="entryForm" class="form glass" onsubmit="return false;">
-      <input id="nameInput" class="glass-input" type="text" placeholder="Nama ..." required autocomplete="off" aria-label="Nama"/>
-      <input id="pointInput" class="glass-input" type="number" placeholder="Point ..." min="0" aria-label="Point"/>
-      <input id="dateInput" class="glass-input" type="date" aria-label="Tanggal"/>
-      <input id="kegInput" class="glass-input" type="text" placeholder="Kegiatan ..." autocomplete="off" aria-label="Kegiatan"/>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <button id="addBtn" class="btn" type="button" aria-label="Tambah data">Tambah</button>
-        <button id="updateBtn" class="btn ghost" type="button" style="display:none;" aria-label="Simpan perubahan">Simpan</button>
-        <button id="resetBtn" class="btn ghost small" type="button" aria-label="Reset form">Reset</button>
-      </div>
-    </form>
-
-    <div class="table-wrap glass" role="region" aria-live="polite" aria-label="Daftar laporan point">
-      <table id="dataTable" aria-describedby="tableNote" role="table">
-        <thead>
-          <tr>
-            <th scope="col" data-key="name" tabindex="0" aria-sort="ascending">NAMA ▲▼</th>
-            <th scope="col" data-key="point" style="width:90px; text-align:center;" tabindex="0" aria-sort="none">POINT</th>
-            <th scope="col" data-key="date" style="width:140px; text-align:center;" tabindex="0" aria-sort="none">TANGGAL</th>
-            <th scope="col" data-key="kegiatan" style="text-align:center;" tabindex="0" aria-sort="none">KEGIATAN</th>
-            <th scope="col" style="width:120px; text-align:center;">AKSI</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
-      </table>
-      <div id="tableNote">Data tersimpan di browser • Tampilan kaca</div>
-    </div>
-  </div>
-
-  <!-- Modal -->
-  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modaltitle">
-      <h3 id="modaltitle">Konfirmasi Hapus</h3>
-      <p id="modalMsg">Apakah Anda yakin ingin menghapus entri ini? Tindakan ini tidak dapat dibatalkan.</p>
-      <div style="display:flex;gap:10px;justify-content:center;margin-top:8px;">
-        <button id="confirmDelete" class="btn" aria-label="Ya, hapus entri">Ya, Hapus</button>
-        <button id="cancelDelete" class="btn ghost" aria-label="Batal hapus entri">Batal</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Optional script placeholder for your existing JS here -->
-
-</body>
+  </div>    <!-- Delete modal -->    <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">  
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modaltitle">  
+      <h3 id="modaltitle">Konfirmasi Hapus</h3>  
+      <p id="modalMsg">Apakah Anda yakin ingin menghapus entri ini? Tindakan ini tidak dapat dibatalkan.</p>  
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:8px;">  
+        <button class="btn" id="confirmDelete">Ya, Hapus</button>  
+        <button class="btn ghost" id="cancelDelete">Batal</button>  
+      </div>  
+    </div>  
+  </div>  <script>  
+/* ---------- App State ---------- */  
+const LS_KEY = "laporan_point_v2";  
+let data = [];  
+let editingId = null;  
+let pendingDeleteId = null;  
+let sortState = { key: 'name', dir: 'asc' };  
+  
+/* ---------- Helpers ---------- */  
+const $ = s => document.querySelector(s);  
+const $$ = s => document.querySelectorAll(s);  
+  
+function genId(){ return 'id_'+Math.random().toString(36).slice(2,9); }  
+  
+function formatDisplayDate(iso){  
+  if(!iso) return "";  
+  const d = new Date(iso);  
+  const dd = String(d.getDate()).padStart(2,'0');  
+  const mm = String(d.getMonth()+1).padStart(2,'0');  
+  const yy = d.getFullYear();  
+  return `${dd}/${mm}/${yy}`;  
+}  
+  
+/* ---------- Load / Save ---------- */  
+function loadData(){  
+  try{  
+    const raw = localStorage.getItem(LS_KEY);  
+    data = raw ? JSON.parse(raw) : getSampleData();  
+  }catch(e){  
+    data = getSampleData();  
+  }  
+}  
+function saveData(){ localStorage.setItem(LS_KEY, JSON.stringify(data)); }  
+  
+function getSampleData(){  
+  const today = new Date().toISOString().slice(0,10);  
+  return [  
+    { id: genId(), name: "DAFFA", point: "20", date: today, kegiatan: "LATIHAN" },  
+    { id: genId(), name: "FAREL", point: "21", date: today, kegiatan: "LATIHAN" },  
+    { id: genId(), name: "JOKOWI", point: "18", date: today, kegiatan: "LATIHAN" }  
+  ];  
+}  
+  
+/* ---------- DOM Refs ---------- */  
+const refs = {  
+  name: $('#nameInput'),  
+  point: $('#pointInput'),  
+  date: $('#dateInput'),  
+  keg: $('#kegInput'),  
+  addBtn: $('#addBtn'),  
+  updateBtn: $('#updateBtn'),  
+  resetBtn: $('#resetBtn'),  
+  tableBody: $('#tableBody'),  
+  globalSearch: $('#globalSearch'),  
+  toggleTheme: $('#toggleTheme'),  
+  modalBackdrop: $('#modalBackdrop'),  
+  confirmDelete: $('#confirmDelete'),  
+  cancelDelete: $('#cancelDelete'),  
+  exportCsv: $('#exportCsv'),  
+  exportXlsx: $('#exportXlsx')  
+};  
+  
+/* ---------- Rendering ---------- */  
+function renderTable(){  
+  const q = refs.globalSearch.value.trim().toLowerCase();  
+  let rows = data.filter(r=>{  
+    if(!q) return true;  
+    return (r.name||'').toLowerCase().includes(q) ||  
+           (r.kegiatan||'').toLowerCase().includes(q) ||  
+           (r.point||'').toLowerCase().includes(q) ||  
+           formatDisplayDate(r.date).toLowerCase().includes(q);  
+  });  
+  
+  // sort  
+  rows.sort((a,b)=>{  
+    const k = sortState.key;  
+    if(k === 'point'){  
+      const na = parseFloat(a.point) || 0, nb = parseFloat(b.point) || 0;  
+      return sortState.dir === 'asc' ? na - nb : nb - na;  
+    }  
+    if(k === 'date'){  
+      const da = a.date || '', db = b.date || '';  
+      if(da < db) return sortState.dir === 'asc' ? -1 : 1;  
+      if(da > db) return sortState.dir === 'asc' ? 1 : -1;  
+      return 0;  
+    }  
+    const va = (a[k]||'').toLowerCase(), vb = (b[k]||'').toLowerCase();  
+    if(va < vb) return sortState.dir === 'asc' ? -1 : 1;  
+    if(va > vb) return sortState.dir === 'asc' ? 1 : -1;  
+    return 0;  
+  });  
+  
+  refs.tableBody.innerHTML = "";  
+  rows.forEach(row=>{  
+    const tr = document.createElement('tr');  
+  
+    const tdName = document.createElement('td');  
+    tdName.innerHTML = `<div class="pill">${escapeHtml(row.name||'')}</div>`;  
+    tr.appendChild(tdName);  
+  
+    const tdPoint = document.createElement('td');  
+    tdPoint.style.textAlign = 'center';  
+    tdPoint.innerHTML = `<div class="small-muted">${escapeHtml(row.point||'')}</div>`;  
+    tr.appendChild(tdPoint);  
+  
+    const tdDate = document.createElement('td');  
+    tdDate.style.textAlign = 'center';  
+    tdDate.innerHTML = `<div class="small-muted">${formatDisplayDate(row.date)}</div>`;  
+    tr.appendChild(tdDate);  
+  
+    const tdKeg = document.createElement('td');  
+    tdKeg.style.textAlign = 'center';  
+    tdKeg.innerHTML = `<div class="small-muted">${escapeHtml(row.kegiatan||'')}</div>`;  
+    tr.appendChild(tdKeg);  
+  
+    const tdAksi = document.createElement('td');  
+    tdAksi.style.textAlign = 'center';  
+    tdAksi.innerHTML = `  
+      <div class="row-ops">  
+        <button class="icon-btn" data-act="edit" data-id="${row.id}">EDIT</button>  
+        <button class="icon-btn" data-act="delete" data-id="${row.id}">HAPUS</button>  
+      </div>`;  
+    tr.appendChild(tdAksi);  
+  
+    refs.tableBody.appendChild(tr);  
+  });  
+  
+  // wire actions  
+  refs.tableBody.querySelectorAll('[data-act]').forEach(btn=>{  
+    btn.onclick = ()=> {  
+      const act = btn.getAttribute('data-act');  
+      const id = btn.getAttribute('data-id');  
+      if(act === 'edit') startEdit(id);  
+      else if(act === 'delete') confirmDelete(id);  
+    };  
+  });  
+}  
+  
+/* ---------- CRUD ---------- */  
+function addEntry(){  
+  const name = refs.name.value.trim();  
+  const point = refs.point.value.trim();  
+  const date = refs.date.value || null;  
+  const keg = refs.keg.value.trim();  
+  if(!name){ alert("Nama diperlukan."); return; }  
+  const item = { id: genId(), name, point, date, kegiatan: keg };  
+  data.unshift(item);  
+  saveData();  
+  clearForm();  
+  renderTable();  
+}  
+  
+function startEdit(id){  
+  const rec = data.find(r=>r.id===id);  
+  if(!rec) return;  
+  editingId = id;  
+  refs.name.value = rec.name || "";  
+  refs.point.value = rec.point || "";  
+  refs.date.value = rec.date || "";  
+  refs.keg.value = rec.kegiatan || "";  
+  refs.addBtn.style.display = "none";  
+  refs.updateBtn.style.display = "inline-block";  
+  window.scrollTo({ top: 0, behavior: 'smooth' });  
+}  
+  
+function applyUpdate(){  
+  if(!editingId) return;  
+  const rec = data.find(r=>r.id===editingId);  
+  if(!rec) return;  
+  rec.name = refs.name.value.trim();  
+  rec.point = refs.point.value.trim();  
+  rec.date = refs.date.value || null;  
+  rec.kegiatan = refs.keg.value.trim();  
+  saveData();  
+  editingId = null;  
+  refs.addBtn.style.display = "inline-block";  
+  refs.updateBtn.style.display = "none";  
+  clearForm();  
+  renderTable();  
+}  
+  
+function clearForm(){  
+  refs.name.value = "";  
+  refs.point.value = "";  
+  refs.date.value = "";  
+  refs.keg.value = "";  
+  editingId = null;  
+  refs.addBtn.style.display = "inline-block";  
+  refs.updateBtn.style.display = "none";  
+}  
+  
+/* ---------- Delete Modal ---------- */  
+function confirmDelete(id){  
+  pendingDeleteId = id;  
+  $('#modalMsg').textContent = "Yakin ingin menghapus entri ini? Tindakan ini tidak dapat dibatalkan.";  
+  const mb = $('#modalBackdrop');  
+  mb.classList.add('show');  
+  mb.setAttribute('aria-hidden','false');  
+}  
+function cancelDelete(){  
+  pendingDeleteId = null;  
+  const mb = $('#modalBackdrop');  
+  mb.classList.remove('show');  
+  mb.setAttribute('aria-hidden','true');  
+}  
+function doDelete(){  
+  if(!pendingDeleteId) return;  
+  data = data.filter(r=> r.id !== pendingDeleteId);  
+  saveData();  
+  pendingDeleteId = null;  
+  cancelDelete();  
+  renderTable();  
+}  
+  
+/* ---------- Export ---------- */  
+function exportCSV(){  
+  const header = ["Nama","Point","Tanggal","Kegiatan"];  
+  const rows = data.map(r => [r.name||'', r.point||'', formatDisplayDate(r.date)||'', r.kegiatan||'']);  
+  const csv = [header, ...rows].map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(",")).join("\n");  
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });  
+  const url = URL.createObjectURL(blob);  
+  downloadUrl(url, "laporan_point.csv");  
+  setTimeout(()=>URL.revokeObjectURL(url), 1500);  
+}  
+  
+function exportXLSX(){  
+  const ws_data = [  
+    ["Nama","Point","Tanggal","Kegiatan"],  
+    ...data.map(r=>[r.name||'', r.point||'', formatDisplayDate(r.date)||'', r.kegiatan||''])  
+  ];  
+  const ws = XLSX.utils.aoa_to_sheet(ws_data);  
+  const wb = XLSX.utils.book_new();  
+  XLSX.utils.book_append_sheet(wb, ws, "Laporan");  
+  const wbout = XLSX.write(wb, { bookType:'xlsx', type:'array' });  
+  const blob = new Blob([wbout],{type:"application/octet-stream"});  
+  const url = URL.createObjectURL(blob);  
+  downloadUrl(url, "laporan_point.xlsx");  
+  setTimeout(()=>URL.revokeObjectURL(url), 1500);  
+}  
+  
+function downloadUrl(url, filename){  
+  const a = document.createElement('a');  
+  a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();  
+}  
+  
+/* ---------- Utils & Events ---------- */  
+function escapeHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }  
+  
+// header sort clicks  
+$$('thead th[data-key]').forEach(th=>{  
+  th.addEventListener('click', ()=>{  
+    const k = th.getAttribute('data-key');  
+    if(sortState.key === k) sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';  
+    else { sortState.key = k; sortState.dir = 'asc'; }  
+    renderTable();  
+  });  
+});  
+  
+// wiring  
+refs.addBtn.addEventListener('click', addEntry);  
+refs.updateBtn.addEventListener('click', applyUpdate);  
+refs.resetBtn.addEventListener('click', clearForm);  
+refs.globalSearch.addEventListener('input', ()=>renderTable());  
+refs.cancelDelete.addEventListener('click', cancelDelete);  
+refs.confirmDelete.addEventListener('click', doDelete);  
+refs.exportCsv.addEventListener('click', exportCSV);  
+refs.exportXlsx.addEventListener('click', exportXLSX);  
+  
+// modal close on backdrop click  
+$('#modalBackdrop').addEventListener('click', (e)=>{  
+  if(e.target === $('#modalBackdrop')) cancelDelete();  
+});  
+  
+/* Theme toggle (manual only, dark = full black) */  
+let isDark = false;  
+function applyTheme(){  
+  document.body.classList.toggle('dark', isDark);  
+  $('#toggleTheme').textContent = isDark ? "Mode Terang" : "Mode Gelap";  
+  localStorage.setItem('laporan_theme', isDark ? 'dark' : 'light');  
+}  
+$('#toggleTheme').addEventListener('click', ()=>{  
+  isDark = !isDark;  
+  applyTheme();  
+});  
+  
+// load stored theme & data  
+(function init(){  
+  const t = localStorage.getItem('laporan_theme');  
+  if(t) isDark = t === 'dark';  
+  applyTheme();  
+  loadData();  
+  renderTable();  
+})();  
+</script>  </body>  
 </html>
