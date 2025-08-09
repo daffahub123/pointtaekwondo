@@ -225,7 +225,7 @@
   </div>    <!-- Delete modal -->    <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">  
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modaltitle">  
       <h3 id="modaltitle">Konfirmasi Hapus</h3>  
-      <p id="modalMsg">Apakah Anda yakin ingin menghapus entri ini? Tindakan ini tidak dapat dibatalkan.</p>  
+      <p id="modalMsg" style="color:white;">Apakah Anda yakin ingin menghapus entri ini? Tindakan ini tidak dapat dibatalkan.</p>  
       <div style="display:flex;gap:10px;justify-content:center;margin-top:8px;">  
         <button class="btn" id="confirmDelete">Ya, Hapus</button>  
         <button class="btn ghost" id="cancelDelete">Batal</button>  
@@ -350,8 +350,8 @@ function renderTable(){
     tdAksi.style.textAlign = 'center';  
     tdAksi.innerHTML = `  
       <div class="row-ops">  
-        <button class="icon-btn" data-act="edit" data-id="${row.id}">EDIT</button>  
-        <button class="icon-btn" data-act="delete" data-id="${row.id}">HAPUS</button>  
+        <button class="icon-btn" data-act="edit" data-id="${row.id}" style="color:black;">EDIT</button>
+        <button class="icon-btn" data-act="delete" data-id="${row.id}" style="color:black;">HAPUS</button>
       </div>`;  
     tr.appendChild(tdAksi);  
   
@@ -515,7 +515,18 @@ $('#toggleTheme').addEventListener('click', ()=>{
   isDark = !isDark;  
   applyTheme();  
 });  
-  
+  <style>
+@media (prefers-color-scheme: light) {
+  body {
+    color: black;
+  }
+  #modalMsg,
+  .icon-btn {
+    color: black;
+  }
+}
+</style>
+
 // load stored theme & data  
 (function init(){  
   const t = localStorage.getItem('laporan_theme');  
