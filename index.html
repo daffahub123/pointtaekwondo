@@ -6,73 +6,68 @@
 <title>Konfirmasi Hapus</title>
 
 <style>
+/* Mode terang */
+@media (prefers-color-scheme: light) {
+  body {
+    background-color: white;
+    color: black;
+  }
+  #modalMsg, .icon-btn {
+    color: black;
+  }
+  .icon-btn {
+    background-color: #e0e0e0; /* abu terang */
+  }
+  .icon-btn:hover {
+    background-color: #d5d5d5;
+  }
+  .modal {
+    background-color: white;
+  }
+}
+
+/* Mode gelap */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #121212;
+    color: white;
+  }
+  #modalMsg, .icon-btn {
+    color: white;
+  }
+  .icon-btn {
+    background-color: #2a2a2a; /* abu gelap */
+    box-shadow: 0 0 0 transparent;
+  }
+  .icon-btn:hover {
+    background-color: #3a3a3a;
+    box-shadow: 0 0 10px rgba(0, 150, 255, 0.7); /* glow biru */
+  }
+  .modal {
+    background-color: #1e1e1e;
+  }
+}
+
+/* Styling umum */
 body {
   font-family: Arial, sans-serif;
   padding: 20px;
-  transition: background 0.3s, color 0.3s;
 }
 
-/* Tombol Edit & Hapus */
 .icon-btn {
   padding: 6px 12px;
-  background: transparent;
   border: none;
   cursor: pointer;
   font-weight: bold;
   border-radius: 4px;
-  transition: background 0.2s, color 0.2s;
+  transition: all 0.3s ease;
+  margin-right: 5px;
 }
 
 .icon-btn:hover {
-  background: rgba(0,0,0,0.1);
+  opacity: 0.95;
 }
 
-/* Tombol ganti tema */
-.theme-toggle {
-  position: fixed;
-  top: 15px;
-  right: 15px;
-  cursor: pointer;
-  background: transparent;
-  border: none;
-  font-size: 18px;
-}
-
-/* Mode terang */
-.light-theme {
-  background-color: white;
-  color: black;
-}
-.light-theme #modalMsg, 
-.light-theme .icon-btn {
-  color: black;
-}
-.light-theme .icon-btn:hover {
-  background: rgba(0,0,0,0.1);
-  color: black;
-}
-.light-theme .modal {
-  background-color: white;
-}
-
-/* Mode gelap */
-.dark-theme {
-  background-color: #121212;
-  color: white;
-}
-.dark-theme #modalMsg, 
-.dark-theme .icon-btn {
-  color: white;
-}
-.dark-theme .icon-btn:hover {
-  background: rgba(255,255,255,0.1);
-  color: white;
-}
-.dark-theme .modal {
-  background-color: #1e1e1e;
-}
-
-/* Modal backdrop */
 .modal-backdrop {
   position: fixed;
   top: 0;
@@ -86,7 +81,6 @@ body {
   animation: fadeOut 0.3s forwards;
 }
 
-/* Modal box */
 .modal {
   padding: 20px;
   border-radius: 8px;
@@ -96,7 +90,6 @@ body {
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
-/* Tombol dalam modal */
 .btn {
   padding: 6px 12px;
   border: none;
@@ -124,12 +117,8 @@ body {
   to {opacity: 0;}
 }
 </style>
-
 </head>
 <body>
-
-<!-- Tombol ganti tema -->
-<button class="theme-toggle" id="themeToggle">🌙</button>
 
 <!-- Tombol Edit dan Hapus -->
 <button class="icon-btn" data-act="edit" data-id="1">EDIT</button>
@@ -152,30 +141,6 @@ const modalBackdrop = document.getElementById('modalBackdrop');
 const deleteBtn = document.querySelector('[data-act="delete"]');
 const cancelBtn = document.getElementById('cancelDelete');
 const confirmBtn = document.getElementById('confirmDelete');
-const themeToggle = document.getElementById('themeToggle');
-const body = document.body;
-
-// === Tema otomatis berdasarkan OS ===
-if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-  body.classList.add('dark-theme');
-  themeToggle.textContent = '🌞';
-} else {
-  body.classList.add('light-theme');
-  themeToggle.textContent = '🌙';
-}
-
-// === Toggle tema manual ===
-themeToggle.addEventListener('click', () => {
-  if (body.classList.contains('light-theme')) {
-    body.classList.remove('light-theme');
-    body.classList.add('dark-theme');
-    themeToggle.textContent = '🌞';
-  } else {
-    body.classList.remove('dark-theme');
-    body.classList.add('light-theme');
-    themeToggle.textContent = '🌙';
-  }
-});
 
 // Tampilkan modal
 deleteBtn.addEventListener('click', () => {
