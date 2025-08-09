@@ -40,22 +40,6 @@
     gap:var(--gap);
   }
 
-  /* Animasi glow untuk mode gelap */
-@keyframes pulseGlow {
-  0% { box-shadow: 0 0 8px rgba(0,150,255,0.5); }
-  50% { box-shadow: 0 0 16px rgba(0,150,255,0.9); }
-  100% { box-shadow: 0 0 8px rgba(0,150,255,0.5); }
-  /* glass card style used everywhere for consistency (like search) */
-  .glass {
-    background: var(--card-light);
-    border-radius: var(--radius);
-    padding: 12px;
-    border: 1px solid var(--glass-border-light);
-    box-shadow: var(--shadow);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
-  }
-
   /* Header */
   .header {
     display:flex; align-items:center; gap:16px; justify-content:space-between; margin-bottom:12px;
@@ -186,7 +170,170 @@
     box-shadow: 0 6px 18px rgba(255,255,255,0.02);
     color: black !important;
   }
+/* Mode terang */
+@media (prefers-color-scheme: light) {
+  body {
+    background-color: white;
+    color: black;
+  }
+  #modalMsg {
+    color: black;
+  }
+  .icon-btn {
+    color: black;
+    background-color: #f0f0f0;
+  }
+  .icon-btn:hover {
+    background-color: #ddd;
+  }
+  .modal {
+    background-color: white;
+  }
+}
 
+/* Mode gelap */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #121212;
+    color: white;
+  }
+  #modalMsg {
+    color: white;
+  }
+  .icon-btn {
+    color: white;
+    background-color: #2a2a2a;
+  }
+  .icon-btn:hover {
+    animation: pulseGlow 1.2s infinite;
+  }
+  .modal {
+    background-color: #1e1e1e;
+  }
+}
+
+/* Animasi glow untuk mode gelap */
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 8px rgba(0,150,255,0.5); }
+  50% { box-shadow: 0 0 16px rgba(0,150,255,0.9); }
+  100% { box-shadow: 0 0 8px rgba(0,150,255,0.5); }
+}
+
+/* Styling umum */
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+.icon-btn {
+  padding: 6px 12px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 6px;
+  margin: 5px;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.btn {
+  padding: 6px 12px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.btn.ghost {
+  background: transparent;
+  border: 1px solid currentColor;
+}
+
+.btn:hover {
+  opacity: 0.85;
+}
+</style>
+
+</head>
+<body>
+
+<!-- Tombol Edit dan Hapus -->
+<div>
+  <button class="icon-btn" data-act="edit" data-id="1">EDIT</button>
+  <button class="icon-btn" data-act="delete" data-id="1">HAPUS</button>
+</div>
+<div>
+  <button class="icon-btn" data-act="edit" data-id="2">EDIT</button>
+  <button class="icon-btn" data-act="delete" data-id="2">HAPUS</button>
+</div>
+<div>
+  <button class="icon-btn" data-act="edit" data-id="3">EDIT</button>
+  <button class="icon-btn" data-act="delete" data-id="3">HAPUS</button>
+</div>
+<div>
+  <button class="icon-btn" data-act="edit" data-id="4">EDIT</button>
+  <button class="icon-btn" data-act="delete" data-id="4">HAPUS</button>
+</div>
+
+<!-- Delete modal -->
+<div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modaltitle">
+    <h3 id="modaltitle">Konfirmasi Hapus</h3>
+    <p id="modalMsg">Apakah Anda yakin ingin menghapus entri ini? Tindakan ini tidak dapat dibatalkan.</p>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:8px;">
+      <button class="btn" id="confirmDelete">Ya, Hapus</button>
+      <button class="btn ghost" id="cancelDelete">Batal</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const modalBackdrop = document.getElementById('modalBackdrop');
+const deleteButtons = document.querySelectorAll('[data-act="delete"]');
+const cancelBtn = document.getElementById('cancelDelete');
+const confirmBtn = document.getElementById('confirmDelete');
+
+// Tampilkan modal
+deleteButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    modalBackdrop.style.display = 'flex';
+    modalBackdrop.setAttribute('aria-hidden', 'false');
+  });
+});
+
+// Tutup modal
+function closeModal() {
+  modalBackdrop.style.display = 'none';
+  modalBackdrop.setAttribute('aria-hidden', 'true');
+}
+
+cancelBtn.addEventListener('click', closeModal);
+
+confirmBtn.addEventListener('click', () => {
+  closeModal();
+  alert('Data dihapus!');
+});
+  
   /* ensure inputs & table text contrast */
   input, select, textarea, button { color: inherit; font-weight:700; }
   td, th { color: inherit; }
