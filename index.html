@@ -1,227 +1,426 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-<meta charset="UTF-8">
-<title>Data Poin</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Laporan Point — Final</title>
+
 <style>
-    * {box-sizing: border-box; margin:0; padding:0; font-family: 'Poppins', sans-serif;}
-    body {
-        display: flex; flex-direction: column; align-items: center;
-        min-height: 100vh; padding: 20px;
-        transition: background 0.3s, color 0.3s;
+  :root {
+    --bg-light: #f2f4f7;
+    --text-light: #000000;
+    --card-light: rgba(255 255 255 / 0.6);
+    --glass-border-light: rgba(255 255 255 / 0.4);
+
+    --bg-dark: #000000;
+    --text-dark: #ffffff;
+    --card-dark: rgba(255 255 255 / 0.07);
+    --glass-border-dark: rgba(255 255 255 / 0.15);
+
+    --accent: #ffffff;
+    --radius: 12px;
+    --gap: 12px;
+    --shadow: 0 6px 18px rgba(0 0 0 / 0.12);
+
+    font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  html, body {
+    margin: 0; padding: 20px; height: 100%;
+    background: var(--bg-light);
+    color: var(--text-light);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body.dark {
+    background: var(--bg-dark);
+    color: var(--text-dark);
+  }
+
+  .app {
+    max-width: 1100px;
+    margin: 18px auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+  }
+
+  /* Glass style */
+  .glass {
+    background: var(--card-light);
+    border-radius: var(--radius);
+    padding: 12px;
+    border: 1px solid var(--glass-border-light);
+    box-shadow: var(--shadow);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    color: inherit;
+    transition: background 0.3s ease, border-color 0.3s ease;
+  }
+
+  body.dark .glass {
+    background: var(--card-dark);
+    border-color: var(--glass-border-dark);
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .brand {
+    font-weight: 800;
+    letter-spacing: 1px;
+    font-size: 20px;
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, rgba(255 255 255 / 0.12), rgba(255 255 255 / 0.04));
+    color: var(--accent);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    user-select: none;
+  }
+
+  /* Search */
+  .search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 260px;
+    background: var(--card-light);
+    border-radius: 40px;
+    padding: 8px 16px;
+    border: 1px solid var(--glass-border-light);
+    font-weight: 700;
+    color: inherit;
+  }
+  body.dark .search {
+    background: var(--card-dark);
+    border-color: var(--glass-border-dark);
+  }
+
+  .search svg {
+    opacity: 0.9;
+    stroke: currentColor;
+  }
+
+  .search input {
+    border: none;
+    outline: none;
+    background: transparent;
+    color: inherit;
+    font-weight: 700;
+    width: 100%;
+    font-size: 15px;
+  }
+
+  /* Buttons */
+  .btn {
+    padding: 9px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--glass-border-light);
+    background: var(--card-light);
+    font-weight: 700;
+    cursor: pointer;
+    color: var(--accent);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  body.dark .btn {
+    background: var(--card-dark);
+    border-color: var(--glass-border-dark);
+    color: var(--text-dark);
+  }
+
+  .btn.ghost {
+    background: transparent;
+    color: inherit;
+    border-color: transparent;
+  }
+
+  .btn.small {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  .actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  /* Form */
+  form.form {
+    display: grid;
+    grid-template-columns: 1fr 120px 1fr 160px auto;
+    gap: 12px;
+    align-items: center;
+  }
+
+  @media (max-width: 920px) {
+    form.form {
+      grid-template-columns: 1fr;
     }
-    body.light {
-        background: #f0f0f0;
-        color: #000; /* teks hitam di mode terang */
+    .search {
+      min-width: auto;
+      width: 100%;
     }
-    body.dark {
-        background: #000;
-        color: #fff;
-    }
-    h1 {
-        margin-bottom: 20px;
-    }
-    .container {
-        backdrop-filter: blur(12px);
-        background: rgba(255,255,255,0.6);
-        padding: 20px;
-        border-radius: 12px;
-        width: 100%;
-        max-width: 900px;
-        box-shadow: 0 4px 30px rgba(0,0,0,0.1);
-    }
-    body.dark .container {
-        background: rgba(30,30,30,0.6);
-    }
-    .controls {
-        display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;
-    }
-    input, button, select {
-        padding: 8px 12px;
-        border-radius: 8px;
-        border: none;
-        outline: none;
-        backdrop-filter: blur(8px);
-        background: rgba(255,255,255,0.5);
-    }
-    body.dark input, body.dark button, body.dark select {
-        background: rgba(50,50,50,0.5);
-        color: #fff;
-    }
-    body.light input, body.light select, body.light button {
-        color: #000; /* teks hitam di form mode terang */
-    }
-    table {
-        width: 100%; border-collapse: collapse; margin-top: 15px;
-        backdrop-filter: blur(8px);
-    }
-    th, td {
-        padding: 10px;
-        background: rgba(255,255,255,0.5);
-        text-align: left;
-    }
-    body.dark th, body.dark td {
-        background: rgba(50,50,50,0.5);
-    }
-    body.light th, body.light td {
-        color: #000; /* teks hitam di tabel mode terang */
-    }
-    th {cursor: pointer;}
-    .modal {
-        display: none;
-        position: fixed; top:0; left:0; width:100%; height:100%;
-        background: rgba(0,0,0,0.4);
-        justify-content: center; align-items: center;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        z-index: 10;
-    }
-    .modal.show {display:flex; opacity:1;}
-    .modal-content {
-        background: rgba(255,255,255,0.7);
-        backdrop-filter: blur(15px);
-        padding: 20px;
-        border-radius: 12px;
-        text-align: center;
-        width: 300px;
-        transform: scale(0.8);
-        transition: transform 0.3s ease;
-        color: #000; /* teks hitam default modal */
-    }
-    body.dark .modal-content {
-        background: rgba(30,30,30,0.7);
-        color: #fff;
-    }
-    .modal.show .modal-content {transform: scale(1);}
+  }
+
+  input.glass-input {
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border-light);
+    background: var(--card-light);
+    font-weight: 700;
+    outline: none;
+    color: inherit;
+    font-size: 15px;
+  }
+  input.glass-input[type="date"] {
+    padding: 8px 10px;
+  }
+  body.dark input.glass-input {
+    background: var(--card-dark);
+    border-color: var(--glass-border-dark);
+  }
+
+  /* Table */
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: var(--radius);
+    padding: 12px;
+    border: 1px solid var(--glass-border-light);
+    background: linear-gradient(180deg, rgba(255 255 255 / 0.03), rgba(255 255 255 / 0.02));
+  }
+  body.dark .table-wrap {
+    background: var(--card-dark);
+    border-color: var(--glass-border-dark);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 720px;
+  }
+
+  thead th {
+    text-align: left;
+    padding: 14px 12px;
+    font-weight: 800;
+    cursor: pointer;
+    user-select: none;
+    color: inherit;
+    white-space: nowrap;
+  }
+
+  tbody td {
+    padding: 12px 12px;
+    font-weight: 700;
+    vertical-align: middle;
+    color: inherit;
+  }
+
+  tr + tr td {
+    border-top: 10px solid transparent;
+  }
+
+  /* Pill style */
+  .pill {
+    display: inline-block;
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    background: var(--card-light);
+    border: 1px solid var(--glass-border-light);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    font-weight: 800;
+    color: var(--accent);
+  }
+  body.dark .pill {
+    background: var(--card-dark);
+    border-color: var(--glass-border-dark);
+    color: var(--text-dark);
+  }
+
+  .small-muted {
+    font-size: 13px;
+    font-weight: 700;
+    color: inherit;
+    opacity: 0.85;
+  }
+  body:not(.dark) .small-muted {
+    color: #000000;
+    opacity: 0.9;
+  }
+  body.dark .small-muted {
+    color: #ffffff;
+    opacity: 0.75;
+  }
+
+  .row-ops {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .icon-btn {
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--glass-border-light);
+    background: var(--card-light);
+    cursor: pointer;
+    font-weight: 800;
+    color: var(--accent);
+    user-select: none;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+  body.dark .icon-btn {
+    background: var(--card-dark);
+    border-color: var(--glass-border-dark);
+    color: var(--text-dark);
+  }
+  .icon-btn:hover {
+    background: var(--glass-border-light);
+    color: var(--text-light);
+  }
+  body.dark .icon-btn:hover {
+    background: var(--glass-border-dark);
+    color: var(--text-dark);
+  }
+
+  /* Modal */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0 0 0 / 0.45);
+    opacity: 0;
+    transition: opacity 220ms ease;
+    z-index: 9999;
+  }
+  .modal-backdrop.show {
+    display: flex;
+    opacity: 1;
+  }
+
+  .modal {
+    width: 92%;
+    max-width: 520px;
+    border-radius: 16px;
+    padding: 18px;
+    text-align: center;
+    border: 1px solid var(--glass-border-light);
+    background: var(--card-light);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    transform: scale(0.92);
+    transition: transform 220ms cubic-bezier(.2,.9,.2,1), opacity 220ms ease;
+    opacity: 0;
+  }
+  body.dark .modal {
+    background: var(--card-dark);
+    border-color: var(--glass-border-dark);
+  }
+  .modal-backdrop.show .modal {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  .modal h3 {
+    margin: 4px 0 10px 0;
+    font-size: 20px;
+    color: inherit;
+  }
+
+  .modal p {
+    color: inherit;
+    opacity: 0.85;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+
+  /* Misc */
+  #tableNote {
+    text-align: right;
+    margin-top: 10px;
+    font-weight: 700;
+    opacity: 0.85;
+    color: inherit;
+  }
+
 </style>
 </head>
-<body class="light">
-    <h1>Data Poin</h1>
-    <div class="container">
-        <div class="controls">
-            <input type="text" id="name" placeholder="Nama">
-            <input type="date" id="date">
-            <input type="text" id="activity" placeholder="Kegiatan">
-            <input type="number" id="points" placeholder="Poin">
-            <button onclick="addData()">Tambah</button>
-            <button onclick="exportCSV()">Export CSV</button>
-            <button onclick="exportXLSX()">Export XLSX</button>
-            <button onclick="toggleTheme()">Toggle Mode</button>
-            <input type="text" id="search" placeholder="Cari..." onkeyup="searchTable()">
+<body>
+  <div class="app">
+    <header class="header">
+      <div style="display:flex;gap:12px;align-items:center;">
+        <div class="brand glass">LAPORAN POINT</div>
+        <div class="search glass" role="search" aria-label="Cari data">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <input id="globalSearch" type="search" placeholder="Cari nama, kegiatan..." aria-label="Cari nama atau kegiatan"/>
         </div>
-        <table id="dataTable">
-            <thead>
-                <tr>
-                    <th>Nama</th>
-                    <th>Tanggal</th>
-                    <th>Kegiatan</th>
-                    <th>Poin</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+      </div>
+
+      <div class="actions">
+        <button id="toggleTheme" class="btn small" aria-pressed="false">Mode Gelap</button>
+        <button id="exportCsv" class="btn" type="button">Export CSV</button>
+        <button id="exportXlsx" class="btn" type="button">Export XLSX</button>
+      </div>
+    </header>
+
+    <form id="entryForm" class="form glass" onsubmit="return false;">
+      <input id="nameInput" class="glass-input" type="text" placeholder="Nama ..." required autocomplete="off" aria-label="Nama"/>
+      <input id="pointInput" class="glass-input" type="number" placeholder="Point ..." min="0" aria-label="Point"/>
+      <input id="dateInput" class="glass-input" type="date" aria-label="Tanggal"/>
+      <input id="kegInput" class="glass-input" type="text" placeholder="Kegiatan ..." autocomplete="off" aria-label="Kegiatan"/>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button id="addBtn" class="btn" type="button" aria-label="Tambah data">Tambah</button>
+        <button id="updateBtn" class="btn ghost" type="button" style="display:none;" aria-label="Simpan perubahan">Simpan</button>
+        <button id="resetBtn" class="btn ghost small" type="button" aria-label="Reset form">Reset</button>
+      </div>
+    </form>
+
+    <div class="table-wrap glass" role="region" aria-live="polite" aria-label="Daftar laporan point">
+      <table id="dataTable" aria-describedby="tableNote" role="table">
+        <thead>
+          <tr>
+            <th scope="col" data-key="name" tabindex="0" aria-sort="ascending">NAMA ▲▼</th>
+            <th scope="col" data-key="point" style="width:90px; text-align:center;" tabindex="0" aria-sort="none">POINT</th>
+            <th scope="col" data-key="date" style="width:140px; text-align:center;" tabindex="0" aria-sort="none">TANGGAL</th>
+            <th scope="col" data-key="kegiatan" style="text-align:center;" tabindex="0" aria-sort="none">KEGIATAN</th>
+            <th scope="col" style="width:120px; text-align:center;">AKSI</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+      <div id="tableNote">Data tersimpan di browser • Tampilan kaca</div>
     </div>
+  </div>
 
-    <div class="modal" id="deleteModal">
-        <div class="modal-content">
-            <p>Yakin ingin menghapus data ini?</p>
-            <button onclick="confirmDelete()">Ya</button>
-            <button onclick="closeModal()">Batal</button>
-        </div>
+  <!-- Modal -->
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modaltitle">
+      <h3 id="modaltitle">Konfirmasi Hapus</h3>
+      <p id="modalMsg">Apakah Anda yakin ingin menghapus entri ini? Tindakan ini tidak dapat dibatalkan.</p>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:8px;">
+        <button id="confirmDelete" class="btn" aria-label="Ya, hapus entri">Ya, Hapus</button>
+        <button id="cancelDelete" class="btn ghost" aria-label="Batal hapus entri">Batal</button>
+      </div>
     </div>
+  </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script>
-    let data = [];
-    let deleteIndex = null;
+  <!-- Optional script placeholder for your existing JS here -->
 
-    function addData() {
-        const name = document.getElementById('name').value.trim();
-        const date = document.getElementById('date').value;
-        const activity = document.getElementById('activity').value.trim();
-        const points = document.getElementById('points').value.trim();
-        if(!name || !date || !activity || !points) return alert('Isi semua kolom!');
-        data.push({name, date, activity, points});
-        renderTable();
-        document.getElementById('name').value = '';
-        document.getElementById('date').value = '';
-        document.getElementById('activity').value = '';
-        document.getElementById('points').value = '';
-    }
-
-    function renderTable() {
-        const tbody = document.querySelector('#dataTable tbody');
-        tbody.innerHTML = '';
-        data.forEach((row, i) => {
-            tbody.innerHTML += `
-                <tr>
-                    <td>${row.name}</td>
-                    <td>${row.date}</td>
-                    <td>${row.activity}</td>
-                    <td>${row.points}</td>
-                    <td>
-                        <button onclick="openModal(${i})">Hapus</button>
-                    </td>
-                </tr>
-            `;
-        });
-    }
-
-    function openModal(index) {
-        deleteIndex = index;
-        document.getElementById('deleteModal').classList.add('show');
-    }
-
-    function closeModal() {
-        document.getElementById('deleteModal').classList.remove('show');
-    }
-
-    function confirmDelete() {
-        if(deleteIndex !== null) {
-            data.splice(deleteIndex, 1);
-            renderTable();
-        }
-        closeModal();
-    }
-
-    function exportCSV() {
-        let csv = "Nama,Tanggal,Kegiatan,Poin\n";
-        data.forEach(row => {
-            csv += `${row.name},${row.date},${row.activity},${row.points}\n`;
-        });
-        const blob = new Blob([csv], { type: "text/csv" });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.setAttribute("hidden", "");
-        a.setAttribute("href", url);
-        a.setAttribute("download", "data.csv");
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-    }
-
-    function exportXLSX() {
-        const ws = XLSX.utils.json_to_sheet(data);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Data");
-        XLSX.writeFile(wb, "data.xlsx");
-    }
-
-    function toggleTheme() {
-        document.body.classList.toggle('dark');
-        document.body.classList.toggle('light');
-    }
-
-    function searchTable() {
-        const query = document.getElementById('search').value.toLowerCase();
-        const rows = document.querySelectorAll('#dataTable tbody tr');
-        rows.forEach(row => {
-            const text = row.innerText.toLowerCase();
-            row.style.display = text.includes(query) ? '' : 'none';
-        });
-    }
-</script>
 </body>
 </html>
