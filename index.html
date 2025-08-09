@@ -273,7 +273,7 @@ function formatDisplayDate(iso){
   const dd = String(d.getDate()).padStart(2,'0');
   const mm = String(d.getMonth()+1).padStart(2,'0');
   const yy = d.getFullYear();
-  return ${dd}/${mm}/${yy};
+  return `${dd}/${mm}/${yy}`;
 }
 
 /* ---------- Load / Save ---------- */
@@ -350,31 +350,31 @@ function renderTable(){
     const tr = document.createElement('tr');
 
     const tdName = document.createElement('td');
-    tdName.innerHTML = <div class="pill">${escapeHtml(row.name||'')}</div>;
+    tdName.innerHTML = `<div class="pill">${escapeHtml(row.name||'')}</div>`;
     tr.appendChild(tdName);
 
     const tdPoint = document.createElement('td');
     tdPoint.style.textAlign = 'center';
-    tdPoint.innerHTML = <div class="small-muted">${escapeHtml(row.point||'')}</div>;
+    tdPoint.innerHTML = `<div class="small-muted">${escapeHtml(row.point||'')}</div>`;
     tr.appendChild(tdPoint);
 
     const tdDate = document.createElement('td');
     tdDate.style.textAlign = 'center';
-    tdDate.innerHTML = <div class="small-muted">${formatDisplayDate(row.date)}</div>;
+    tdDate.innerHTML = `<div class="small-muted">${formatDisplayDate(row.date)}</div>`;
     tr.appendChild(tdDate);
 
     const tdKeg = document.createElement('td');
     tdKeg.style.textAlign = 'center';
-    tdKeg.innerHTML = <div class="small-muted">${escapeHtml(row.kegiatan||'')}</div>;
+    tdKeg.innerHTML = `<div class="small-muted">${escapeHtml(row.kegiatan||'')}</div>`;
     tr.appendChild(tdKeg);
 
     const tdAksi = document.createElement('td');
     tdAksi.style.textAlign = 'center';
-    tdAksi.innerHTML = 
+    tdAksi.innerHTML = `
       <div class="row-ops">
         <button class="icon-btn" data-act="edit" data-id="${row.id}">EDIT</button>
         <button class="icon-btn" data-act="delete" data-id="${row.id}">HAPUS</button>
-      </div>;
+      </div>`;
     tr.appendChild(tdAksi);
 
     refs.tableBody.appendChild(tr);
@@ -471,7 +471,7 @@ function doDelete(){
 function exportCSV(){
   const header = ["Nama","Point","Tanggal","Kegiatan"];
   const rows = data.map(r => [r.name||'', r.point||'', formatDisplayDate(r.date)||'', r.kegiatan||'']);
-  const csv = [header, ...rows].map(r => r.map(c => "${String(c).replace(/"/g,'""')}").join(",")).join("\n");
+  const csv = [header, ...rows].map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(",")).join("\n");
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   downloadUrl(url, "laporan_point.csv");
